@@ -22,14 +22,11 @@ public class FixedWindowRateLimiter implements RateLimiter{
         lock.lock();
         try{
             long currentTimestamp = System.currentTimeMillis();
-            if(currentTimestamp - windowStart > windowStart){
+            if(currentTimestamp - windowStart > windowSizeMillis){
                 windowStart = currentTimestamp;
                 count.set(0);
             }
-            if(count.incrementAndGet() <= maxRequests){
-                return true;
-            }
-            return false;
+            return count.incrementAndGet() <= maxRequests;
         } finally {
             lock.unlock();
         }
