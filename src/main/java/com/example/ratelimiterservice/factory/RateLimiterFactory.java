@@ -9,9 +9,9 @@ public class RateLimiterFactory {
     public static RateLimiter createRateLimiter(String type, int maxRequests, long intervalMillis) {
         switch (type) {
             case "TokenBucket":
-                return new TokenBucketRateLimiter(maxRequests, maxRequests / 2, intervalMillis);
+                return new TokenBucketRateLimiter(maxRequests, maxRequests, intervalMillis);
             case "LeakyBucket":
-                return new LeakyBucketRateLimiter(maxRequests, intervalMillis);
+                return new LeakyBucketRateLimiter(maxRequests, maxRequests/(int) intervalMillis);
             case "FixedWindow":
                 return new FixedWindowRateLimiter(intervalMillis, maxRequests);
             default:

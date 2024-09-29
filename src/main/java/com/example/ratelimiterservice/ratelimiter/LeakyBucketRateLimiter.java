@@ -1,25 +1,25 @@
 package com.example.ratelimiterservice.ratelimiter;
 
 import com.example.ratelimiterservice.bucket.Bucket;
-import com.example.ratelimiterservice.bucket.LeakyBucket;
-import com.example.ratelimiterservice.ratelimiter.RateLimiter;
+import com.example.ratelimiterservice.bucket.LeakyBucket; // Assuming you have the LeakyBucket class
 
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 public class LeakyBucketRateLimiter implements RateLimiter {
-    private final int maxRequests;
-    private final long intervalMillis;
-    private final ConcurrentMap<String, Bucket> buckets = new ConcurrentHashMap<>();
+    private final int capacity; // Capacity of the leaky bucket
+    private final int leakRate; // Leak rate in requests per second
+    private final ConcurrentHashMap<String, Bucket> buckets;
 
-    public LeakyBucketRateLimiter(int maxRequests, long intervalMillis) {
-        this.maxRequests = maxRequests;
-        this.intervalMillis = intervalMillis;
+    public LeakyBucketRateLimiter(int capacity, int leakRate) {
+        this.capacity = capacity;
+        this.leakRate = leakRate;
+        this.buckets = new ConcurrentHashMap<>();
     }
 
     @Override
     public boolean allowRequest(String userId) {
-        Bucket bucket = buckets.computeIfAbsent(userId, k -> new LeakyBucket(maxRequests, intervalMillis));
-        return bucket.grant();
+        // Compute or retrieve the user's leaky bucket
+        Bucket bucket = buckets.computeIfAbsent(userId, k -> new LeakyBucket(capacity, leakRate));
+        return bucket.grant(); // Call the grant method to determine if the request is allowed
     }
 }

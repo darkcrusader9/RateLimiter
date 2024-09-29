@@ -20,7 +20,7 @@ public class TokenBucketRateLimiter implements RateLimiter{
 
     @Override
     public boolean allowRequest(String userId) {
-        Bucket bucket = buckets.computeIfAbsent(userId, k -> new TokenBucket(maxTokens, refillTokens, refillIntervalMillis));
+        Bucket bucket = buckets.computeIfAbsent(userId, k -> new TokenBucket(maxTokens,(int) (refillTokens / refillIntervalMillis * 1000)));
         return bucket.grant();
     }
 }
